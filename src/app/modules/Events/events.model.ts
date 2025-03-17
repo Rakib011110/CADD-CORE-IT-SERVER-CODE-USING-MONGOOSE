@@ -7,7 +7,7 @@ const EventSchema: Schema = new Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     photoUrl: { type: String, required: true },
-    date: { type: Date, required: true },
+    date: { type: Date, required: false },
   },
   { timestamps: true }
 );

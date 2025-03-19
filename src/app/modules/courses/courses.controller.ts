@@ -34,8 +34,36 @@ const getACourse = catchAsync(async (req, res) => {
   });
 });
 
+
+const updateCourse = catchAsync(async (req ,res) => {
+  const id = req.params.id; 
+  
+  const event = await CourseServices.updateCourse(id, req.body);
+  
+  sendResponse(res, {
+      success: true,  
+      statusCode: httpStatus.OK,
+      message: "Event updated successfully",      
+      data: event,
+  })
+  });   
+  
+  const deleteCourse = catchAsync(async (req ,res) => {
+  const id = req.params.id; 
+  const event = await CourseServices.deleteCourse(id); 
+  sendResponse(res, {
+  success: true,
+  statusCode: httpStatus.OK,
+  message: "Event deleted successfully",
+  data: event,
+  
+  });
+  
+  
+  });
+
 export const CourseControllers = {
   createCourse,
   getAllCourses,
-  getACourse,
+  getACourse,updateCourse,deleteCourse
 };

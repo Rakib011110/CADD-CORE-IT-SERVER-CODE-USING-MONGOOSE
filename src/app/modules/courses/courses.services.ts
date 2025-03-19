@@ -16,9 +16,25 @@ const getACourseFromDb = async (id: string) => {
   }
   return course;
 };
+ 
+
+ const updateCourse= async (id: string, payload: TCourse) => {
+    return await Course.findByIdAndUpdate(id, payload, { new: true });
+  };
+
+
+const deleteCourse = async (id: string)=>{
+return await Course.findByIdAndDelete(id)    
+
+}
+
+
+  
+  
+
 
 export const CourseServices = {
   createCourseInDb,
   getAllCoursesFromDb,
-  getACourseFromDb,
+  getACourseFromDb,updateCourse,deleteCourse
 };

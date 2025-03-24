@@ -21,11 +21,12 @@ const getAllCourses = catchAsync(async (req, res) => {
     message: "Courses fetched successfully",
     data: courses,
   });
-});
+}); 
+
 
 const getACourse = catchAsync(async (req, res) => {
-  const courseId = req.params.id;
-  const course = await CourseServices.getACourseFromDb(courseId);
+  const courseSlug = req.params.slug; 
+  const course = await CourseServices.getACourseFromDb(courseSlug);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 import config from '../../config';
 import { USER_ROLE, USER_STATUS } from '../modules/User/user.constant';
-import userModel from '../modules/User/user.model';
+import { User } from '../modules/User/user.model';
+
 // import { User } from '../modules/User/user.model';
 
 export const seed = async () => {
   try {
-    const admin = await userModel.findOne({
+    const admin = await User.findOne({
       role: USER_ROLE.ADMIN,
       email: config.admin_email,
       status: USER_STATUS.ACTIVE,
@@ -14,7 +15,7 @@ export const seed = async () => {
     if (!admin) {
       console.log('Seeding started...');
 
-      await userModel.create({
+      await User.create({
         name: 'Admin',
         role: USER_ROLE.ADMIN,
         email: config.admin_email,

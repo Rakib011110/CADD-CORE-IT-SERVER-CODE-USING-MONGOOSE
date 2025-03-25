@@ -1,9 +1,11 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { TUser } from "./user.interface";
-import { USER_ROLE, USER_STATUS } from "./user.constant";
+/* eslint-disable no-useless-escape */
+import bcryptjs from 'bcryptjs';
+import { Schema, model } from 'mongoose';
+import { USER_ROLE, USER_STATUS } from './user.constant';
+import { IUserModel, TUser } from './user.interface';
+import config from '../../../config';
 
-
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, IUserModel>(
   {
     name: {
       type: String,
@@ -17,7 +19,7 @@ const userSchema = new Schema<TUser>(
     email: {
       type: String,
       required: true,
-     
+      //validate email
       match: [
         /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
         'Please fill a valid email address',
@@ -40,7 +42,7 @@ const userSchema = new Schema<TUser>(
       type: String,
       required: true,
     },
-    photoUrl: {
+    profilePhoto: {
       type: String,
       default: null
     },
@@ -51,5 +53,43 @@ const userSchema = new Schema<TUser>(
   }
 );
 
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this; // doc
+  // hashing password and save into DB
 
-export default mongoose.model<TUser>("User", userSchema);
+  user.password = await bcryptjs.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds)
+  );
+
+  next();
+});
+
+// set '' after saving password
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+userSchema.statics.isUserExistsByEmail = async function (email: string) {
+  return await User.findOne({ email }).select('+password');
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword
+) {
+  return await bcryptjs.compare(plainTextPassword, hashedPassword);
+};
+
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: number,
+  jwtIssuedTimestamp: number
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+  return passwordChangedTime > jwtIssuedTimestamp;
+};
+
+export const User = model<TUser, IUserModel>('User', userSchema);

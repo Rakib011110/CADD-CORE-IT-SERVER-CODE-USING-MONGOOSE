@@ -1,9 +1,9 @@
+import { User } from './user.model';
 import { TUser } from "./user.interface";
-import userModel from "./user.model";
 
 const createUserIntoDB = async (payload: TUser) => {
   try {
-    const newUser = await userModel.create(payload);
+    const newUser = await User.create(payload);
     return newUser;
   } catch (error) {
     throw error;
@@ -12,7 +12,7 @@ const createUserIntoDB = async (payload: TUser) => {
 
 const getAllUsersFromDb = async () => {
   try {
-    const users = await userModel.find();
+    const users = await User.find();
     return users;
   } catch (error) {
     throw error;
@@ -21,7 +21,7 @@ const getAllUsersFromDb = async () => {
 
 const getAUserFromDb = async (id: string) => {
   try {
-    const user = await userModel.findById(id);
+    const user = await User.findById(id);
     if (!user) {
       throw new Error("User not found");
     }
@@ -33,7 +33,7 @@ const getAUserFromDb = async (id: string) => {
  
 const updpateUserInDb = async (id: string, payload: TUser) => {
   try {  
-const user = await userModel.findByIdAndUpdate(id, payload, { new: true });
+const user = await User.findByIdAndUpdate(id, payload, { new: true });
     if (!user) {
       throw new Error("User not found");
     } 
@@ -50,7 +50,7 @@ const user = await userModel.findByIdAndUpdate(id, payload, { new: true });
 const deleteUserFromDb = async (id: string) => {
   try {    
 
-   const deletedUser = await userModel.findByIdAndDelete(id);
+   const deletedUser = await User.findByIdAndDelete(id);
 
 
    if (!deletedUser) {

@@ -1,8 +1,5 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import AppError from '../error/AppError';
-import { JwtPayload } from 'jsonwebtoken';
-import jwt from 'jsonwebtoken';
 import { USER_ROLE, USER_STATUS } from '../modules/User/user.constant';
 
 export const createToken = (
@@ -10,19 +7,20 @@ export const createToken = (
     _id?: string;
     name: string;
     email: string;
-    mobileNumber?: string; 
+    mobileNumber?: string;
     profilePhoto?: string;
     role: keyof typeof USER_ROLE;
     status: keyof typeof USER_STATUS;
   },
   secret: string,
-  expiresIn: string
-) => {
-  return jwt.sign(jwtPayload, secret, {
-    expiresIn, 
-  });
-};
+  expiresIn: any
+): string => {
+  const options: SignOptions = {
+    expiresIn,
+  };
 
+  return jwt.sign(jwtPayload, secret as jwt.Secret, options);
+};
 export const verifyToken = (
   token: string,
   secret: string
